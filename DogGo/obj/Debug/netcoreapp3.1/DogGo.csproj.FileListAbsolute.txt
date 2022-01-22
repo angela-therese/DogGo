@@ -128,3 +128,6 @@ C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\DogGo.
 C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\DogGo.pdb
 C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\DogGo.genruntimeconfig.cache
 C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\Razor\Views\Walkers\Index.cshtml.g.cs
+C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\Razor\Views\Walkers\Details.cshtml.g.cs
+C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\Razor\Views\Owners\Details.cshtml.g.cs
+C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\Razor\Views\Owners\Index.cshtml.g.cs
