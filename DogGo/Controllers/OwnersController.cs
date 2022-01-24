@@ -21,7 +21,7 @@ namespace DogGo.Controllers
 
         // GET: OwnersController/Details/5
         // GET: Owners/Details/5
-        public ActionResult Owners(int id)
+        public ActionResult Details(int id)
         {
             Owner owner = _ownerRepo.GetOwnerById(id);
 

@@ -68,8 +68,8 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, [Name], ImageUrl, NeighborhoodId
-                        FROM Walker
+                        SELECT Id, Email, Name, Address, NeighborhoodId, Phone
+                        FROM Owner
                         WHERE Id = @id
                     ";
 
