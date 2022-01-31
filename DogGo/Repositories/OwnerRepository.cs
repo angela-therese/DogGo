@@ -116,6 +116,7 @@ namespace DogGo.Repositories
         public Owner GetOwnerById(int id)
         {
             Owner owner = null;
+
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
