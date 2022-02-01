@@ -23,7 +23,8 @@ namespace DogGo.Repositories
             }
         }
 
-        public List<Dog> GetDogByOwnerId(int ownerId)
+        //Get list of all dogs
+        public List<Dog> GetAllDogs()
         {
             using (SqlConnection conn = Connection)
             {
@@ -31,38 +32,137 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT Id, Name, OwnerId
-                        FROM Dog 
-                        WHERE OwnerId = @ownerId
+                        SELECT Id, [Name], OwnerId, Breed, Notes, ImageURL
+                        FROM Dog
                     ";
-
-                    cmd.Parameters.AddWithValue("@ownerId", ownerId);
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    List<Dog> dogsByOwner = new List<Dog>();
+                    List<Dog> dogs = new List<Dog>();
+
                     while (reader.Read())
                     {
-                        Dog dog = new Dog
+                        Dog dog= new Dog
                         {
                             Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                          
                             Name = reader.GetString(reader.GetOrdinal("Name")),
-                           
-                            OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId"))
-                            
+                            OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
+                            Breed = reader.GetString(reader.GetOrdinal("Breed")),
+                            //Notes = reader.GetString(reader.GetOrdinal("Notes")),
+                            //ImageURL = reader.GetString(reader.GetOrdinal("ImageURL"))
                         };
 
-                        dogsByOwner.Add(dog);
+                        dogs.Add(dog);
                     }
 
                     reader.Close();
 
-                    return dogsByOwner;
-                };
+                    return dogs;
+                }
             }
         }
-        
+
+        //Add a new dog
+
+        public void AddDog(Dog dog)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                    INSERT INTO Dog ([Name], OwnerId, Breed)
+                    OUTPUT INSERTED.ID
+                    VALUES (@name, @ownerId, @breed);
+                ";
+
+                    cmd.Parameters.AddWithValue("@name", dog.Name);
+                    cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
+                    cmd.Parameters.AddWithValue("@breed", dog.Breed);
+                    //cmd.Parameters.AddWithValue("@notes", dog.Notes);
+                    //cmd.Parameters.AddWithValue("@imageUrl", dog.ImageURL);
+
+                    int id = (int)cmd.ExecuteScalar();
+
+                    dog.Id = id;
+                }
+            }
+        }
+
+        //Get a dog by ID
+        public Dog GetDogById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                        SELECT Id, [Name], OwnerId, Breed
+                        FROM Dog
+                        WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@id", id);
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+
+                    if (reader.Read())
+                    {
+                       Dog dog = new Dog()
+                        {
+                            Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                            Name = reader.GetString(reader.GetOrdinal("Name")),
+                            OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
+                            Breed = reader.GetString(reader.GetOrdinal("Breed")),
+                           
+                        };
+
+                        reader.Close();
+                        return dog;
+                    }
+
+                    reader.Close();
+                    return null;
+                }
+            }
+        }
+
+
+        //Get a list of dogs of a particular owner
+      
+
+        //Edit (update) a dog
+
+        public void UpdateDog(Dog dog)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                            UPDATE Dog
+                            SET 
+                                [Name] = @name, 
+                                OwnerId = @ownerId, 
+                                Breed = @breed
+                                
+                            WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@name", dog.Name);
+                    cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
+                    cmd.Parameters.AddWithValue("@breed", dog.Breed);
+                    cmd.Parameters.AddWithValue("@id", dog.Id);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+
 
     }
 }
