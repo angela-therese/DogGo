@@ -87,29 +87,29 @@ namespace DogGo.Controllers
             }
         }
 
-        //// GET: OwnersController/Delete/5
-        //// GET: Owners/Delete/5
-        //public ActionResult Delete(int id)
-        //{
-        //    Owner owner = _ownerRepo.GetOwnerById(id);
+        // GET: OwnersController/Delete/5
+        // GET: Owners/Delete/5
+        public ActionResult Delete(int id)
+        {
+           Dog dog = _dogRepo.GetDogById(id);
 
-        //    return View(owner);
-        //}
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public ActionResult Delete(int id, Owner owner)
-        //{
-        //    try
-        //    {
-        //        _ownerRepo.DeleteOwner(id);
+            return View(dog);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Delete(int id, Dog dog)
+        {
+            try
+            {
+                _dogRepo.DeleteDog(id);
 
-        //        return RedirectToAction("Index");
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return View(owner);
-        //    }
-        //}
+                return RedirectToAction("Index");
+            }
+            catch (Exception ex)
+            {
+                return View(dog);
+            }
+        }
 
         private readonly IDogRepository _dogRepo;
 

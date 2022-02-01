@@ -424,3 +424,4 @@ C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\Razor\
 C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\Razor\Views\Dogs\Create.cshtml.g.cs
 C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\Razor\Views\Dogs\Edit.cshtml.g.cs
 C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\Razor\Views\Dogs\Details.cshtml.g.cs
+C:\Users\User-42\workspace\ServerSide\DogGo\DogGo\obj\Debug\netcoreapp3.1\Razor\Views\Dogs\Delete.cshtml.g.cs
