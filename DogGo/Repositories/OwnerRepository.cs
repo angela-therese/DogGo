@@ -269,22 +269,7 @@ namespace DogGo.Repositories
 
         public void DeleteOwner(int ownerId)
         {
-            using (SqlConnection conn = Connection)
-            {
-                conn.Open();
-
-                using (SqlCommand cmd = conn.CreateCommand())
-                {
-                    cmd.CommandText = @"
-                            DELETE FROM Owner
-                            WHERE Id = @id
-                        ";
-
-                    cmd.Parameters.AddWithValue("@id", ownerId);
-
-                    cmd.ExecuteNonQuery();
-                }
-            }
+            throw new System.NotImplementedException();
         }
     }
 }

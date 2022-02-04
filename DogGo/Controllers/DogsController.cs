@@ -7,15 +7,20 @@ using System.Linq;
 using System.Threading.Tasks;
 using DogGo.Repositories;
 using DogGo.Models;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DogGo.Controllers
 {
     public class DogsController : Controller
     {
         // GET: Dogs
+       [Authorize]
         public ActionResult Index()
         {
-            List<Dog> dogs = _dogRepo.GetAllDogs();
+            int ownerId = GetCurrentUserId();
+
+            List<Dog> dogs = _dogRepo.GetDogsByOwnerId(ownerId);
 
             return View(dogs);
         }
@@ -35,27 +40,31 @@ namespace DogGo.Controllers
         }
 
         //// GET: OwnersController/Create
+        [Authorize]
         public ActionResult Create()
         {
             return View();
         }
 
         //// POST: OwnersController/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(Dog dog)
-        {
-            try
-            {
-                _dogRepo.AddDog(dog);
+       [HttpPost]
+[ValidateAntiForgeryToken]
+public ActionResult Create(Dog dog)
+{
+    try
+    {
+        // update the dogs OwnerId to the current user's Id 
+        dog.OwnerId = GetCurrentUserId();
 
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                return View(dog);
-            }
-        }
+        _dogRepo.AddDog(dog);
+
+        return RedirectToAction("Index");
+    }
+    catch (Exception ex)
+    {
+        return View(dog);
+    }
+}
 
         // GET: OwnersController/Edit/5
         public ActionResult Edit(int id)
@@ -95,6 +104,7 @@ namespace DogGo.Controllers
 
             return View(dog);
         }
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, Dog dog)
@@ -117,6 +127,12 @@ namespace DogGo.Controllers
         public DogsController(IDogRepository dogRepository)
         {
             _dogRepo = dogRepository;
+        }
+
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
     }
 }
