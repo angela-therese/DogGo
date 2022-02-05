@@ -10,6 +10,7 @@ using DogGo.Models;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 
+
 namespace DogGo.Controllers
 {
     public class DogsController : Controller
@@ -48,30 +49,36 @@ namespace DogGo.Controllers
 
         //// POST: OwnersController/Create
        [HttpPost]
-[ValidateAntiForgeryToken]
-public ActionResult Create(Dog dog)
-{
-    try
-    {
+        [ValidateAntiForgeryToken]
+        public ActionResult Create(Dog dog)
+        {
+          try
+          {
         // update the dogs OwnerId to the current user's Id 
-        dog.OwnerId = GetCurrentUserId();
+                dog.OwnerId = GetCurrentUserId();
 
-        _dogRepo.AddDog(dog);
+                _dogRepo.AddDog(dog);
 
-        return RedirectToAction("Index");
-    }
-    catch (Exception ex)
-    {
-        return View(dog);
-    }
-}
+                 return RedirectToAction("Index");
+            }
+              catch (Exception ex)
+                 {
+                     return View(dog);
+                 }
+          }
 
         // GET: OwnersController/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
+           
             Dog dog = _dogRepo.GetDogById(id);
 
-            if (dog == null)
+            if(dog.OwnerId != GetCurrentUserId())
+            {
+                return NotFound();
+            }
+            else if (dog == null)
             {
                 return NotFound();
             }
@@ -86,18 +93,21 @@ public ActionResult Create(Dog dog)
         {
             try
             {
+                dog.OwnerId = GetCurrentUserId();
                 _dogRepo.UpdateDog(dog);
 
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                return View(dog);
+                return NotFound();
+                //return View(dog);
             }
         }
 
         // GET: OwnersController/Delete/5
         // GET: Owners/Delete/5
+        [Authorize]
         public ActionResult Delete(int id)
         {
            Dog dog = _dogRepo.GetDogById(id);

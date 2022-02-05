@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DogGo.Repositories;
 using DogGo.Models;
+using System.Security.Claims;
 
 namespace DogGo.Controllers
 {
@@ -14,7 +15,17 @@ namespace DogGo.Controllers
         // GET: Walkers
         public ActionResult Index()
         {
-            List<Walker> walkers = _walkerRepo.GetAllWalkers();
+            int currentOwnerId = GetCurrentUserId(); //Get ID of currently logged-in user
+            List<Walker> walkers = new List<Walker>(); //Instantiate new list
+            if (currentOwnerId != 0) //If there is a userId
+            {
+                Owner currentOwner = _ownerRepo.GetOwnerById(currentOwnerId); //Gets the current owner object using the currentownerid
+                walkers = _walkerRepo.GetWalkersInNeighborhood(currentOwner.NeighborhoodId); //Gets walkers based on the owner's neigbhorhood Id 
+            }
+            else 
+            {
+                walkers = _walkerRepo.GetAllWalkers(); // Gets all walkers if there is no current user id
+            }
 
             return View(walkers);
         }
@@ -100,15 +111,31 @@ namespace DogGo.Controllers
 
         private readonly IWalkerRepository _walkerRepo;
         private readonly IDogRepository _dogRepo;
+        private readonly IOwnerRepository _ownerRepo;
        
        
 
         // ASP.NET will give us an instance of our Walker Repository. This is called "Dependency Injection"
-        public WalkersController(IWalkerRepository walkerRepository, IDogRepository dogRepository)
+        public WalkersController(IWalkerRepository walkerRepository, IDogRepository dogRepository, IOwnerRepository ownerRepository )
         {
             _walkerRepo = walkerRepository;
             _dogRepo = dogRepository;
+            _ownerRepo = ownerRepository;
             
+        }
+
+        private int GetCurrentUserId()
+        {
+            string id= User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (id != null)
+            { 
+                return int.Parse(id); 
+            }
+           else
+            {
+                return 0;
+                
+            }
         }
     }
 }
