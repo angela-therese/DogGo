@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DogGo.Repositories;
 using DogGo.Models;
+using DogGo.Models.ViewModels;
 using System.Security.Claims;
 
 namespace DogGo.Controllers
@@ -17,12 +18,12 @@ namespace DogGo.Controllers
         {
             int currentOwnerId = GetCurrentUserId(); //Get ID of currently logged-in user
             List<Walker> walkers = new List<Walker>(); //Instantiate new list
-            if (currentOwnerId != 0) //If there is a userId
+            if (currentOwnerId != 0) //If the userId is not 0
             {
                 Owner currentOwner = _ownerRepo.GetOwnerById(currentOwnerId); //Gets the current owner object using the currentownerid
                 walkers = _walkerRepo.GetWalkersInNeighborhood(currentOwner.NeighborhoodId); //Gets walkers based on the owner's neigbhorhood Id 
             }
-            else 
+            else //if the userId is 0
             {
                 walkers = _walkerRepo.GetAllWalkers(); // Gets all walkers if there is no current user id
             }
@@ -35,15 +36,23 @@ namespace DogGo.Controllers
         public ActionResult Details(int id)
         {
             Walker walker = _walkerRepo.GetWalkerById(id);
-            
+            List<Walk> walks = walker.Walks;
+
+            WalkerProfileViewModel vm = new WalkerProfileViewModel()
+            {
+                Walker = walker,
+                Walks = walks
+            };
+            return View(vm);
+
             //List<Dog> dogs = _dogRepo.GetDogById(.DogId);
 
-            if (walker == null)
-            {
-                return NotFound();
-            }
+            //if (walker == null)
+            //{
+            //    return NotFound();
+            //}
 
-            return View(walker);
+            //return View(walker);
         }
 
         // GET: WalkersController/Create
@@ -133,8 +142,7 @@ namespace DogGo.Controllers
             }
            else
             {
-                return 0;
-                
+                return 0;  
             }
         }
     }

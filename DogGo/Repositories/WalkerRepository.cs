@@ -80,9 +80,9 @@ namespace DogGo.Repositories
                                 o.Id AS OwnerId, 
                                 o.Name AS OwnerName
                                 From Walker w
-                                JOIN Walks k on k.WalkerId = w.Id 
-                                JOIN Dog d on k.DogId = d.Id
-                                JOIN Owner o on d.ownerId = o.Id
+                                LEFT JOIN Walks k on k.WalkerId = w.Id 
+                                LEFT JOIN Dog d on k.DogId = d.Id
+                                LEFT JOIN Owner o on d.ownerId = o.Id
 
                                   WHERE w.Id = @id
                                      ";
@@ -91,30 +91,61 @@ namespace DogGo.Repositories
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                   if (reader.Read())
+                    //Walker walker = new Walker()
+                    //{
+                    //    Id = 0
+                    //};
+                    Walker walker = new Walker();
+
+                    while (reader.Read())
+                        
 
                     {
                         
-                        Walker walker = new Walker
-                        {
-                            Id = reader.GetInt32(reader.GetOrdinal("WalkerId")),
-                            Name = reader.GetString(reader.GetOrdinal("WalkerName")),
-                            ImageUrl = reader.GetString(reader.GetOrdinal("WalkerImage")),
-                            NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId"))
 
-                        };
+                        if (walker.Id == 0)
+                        {
+                            {
+                                walker.Id = reader.GetInt32(reader.GetOrdinal("WalkerId"));
+                                walker.Name = reader.GetString(reader.GetOrdinal("WalkerName"));
+                                walker.ImageUrl = reader.GetString(reader.GetOrdinal("WalkerImage"));
+                                walker.NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId"));
+                                walker.Walks = new List<Walk>();
+
+                            };
 
                             if (!reader.IsDBNull(reader.GetOrdinal("WalkId")))
 
-                        {
-                            walker.Walks = new List<Walk>();
-                            
                             {
+
+
+                                //{
                                 Walk walk = new Walk
                                 {
                                     Id = reader.GetInt32(reader.GetOrdinal("WalkId")),
                                     Date = reader.GetDateTime(reader.GetOrdinal("Date")),
                                     Duration = reader.GetInt32(reader.GetOrdinal("Duration")),
+                                    Client = reader.GetString(reader.GetOrdinal("OwnerName"))
+                                };
+
+                                walker.Walks.Add(walk);
+                                
+                            }
+                        }
+                        //added else statement
+                        else
+                        {
+                            if (!reader.IsDBNull(reader.GetOrdinal("WalkId")))
+
+                            {
+
+                                //{
+                                Walk walk = new Walk
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("WalkId")),
+                                    Date = reader.GetDateTime(reader.GetOrdinal("Date")),
+                                    Duration = reader.GetInt32(reader.GetOrdinal("Duration")),
+                                    Client = reader.GetString(reader.GetOrdinal("OwnerName"))
 
                                 };
 
@@ -123,18 +154,14 @@ namespace DogGo.Repositories
                             }
                         }
 
+                    }
+
+
+
+                    reader.Close();
+
+                    return walker;
                     
-                        reader.Close();
-                        return walker;
-                    }
-
-
-
-                    else
-                    {
-                        reader.Close();
-                        return null;
-                    }
                         
                     
                 }

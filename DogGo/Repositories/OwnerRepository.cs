@@ -146,7 +146,7 @@ namespace DogGo.Repositories
 //                                Email = reader.GetString(reader.GetOrdinal("Email")),
 //                                Address = reader.GetString(reader.GetOrdinal("Address")),
 //                                Phone = reader.GetString(reader.GetOrdinal("Phone")),
-//                                NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
+//                                NeighborhoodId = reader.GetInt32(reader.GetOrdinal                                        ("NeighborhoodId")),
 
 
 //                            };
