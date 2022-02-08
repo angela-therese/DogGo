@@ -69,6 +69,7 @@ namespace DogGo.Repositories
                         SELECT w.Id AS WalkerId,
                                w.Name AS WalkerName, 
                                 w.NeighborhoodId, 
+                                n.Name As NeighName,
                                 w.ImageURL AS WalkerImage, 
                                 k.Id AS WalkId, 
                                 k.Date, 
@@ -81,6 +82,7 @@ namespace DogGo.Repositories
                                 o.Name AS OwnerName
                                 From Walker w
                                 LEFT JOIN Walks k on k.WalkerId = w.Id 
+                                LEFT JOIN Neighborhood n on n.Id = w.NeighborhoodId
                                 LEFT JOIN Dog d on k.DogId = d.Id
                                 LEFT JOIN Owner o on d.ownerId = o.Id
 
@@ -91,10 +93,7 @@ namespace DogGo.Repositories
 
                     SqlDataReader reader = cmd.ExecuteReader();
 
-                    //Walker walker = new Walker()
-                    //{
-                    //    Id = 0
-                    //};
+                  
                     Walker walker = new Walker();
 
                     while (reader.Read())
@@ -105,20 +104,24 @@ namespace DogGo.Repositories
 
                         if (walker.Id == 0)
                         {
+                            
+
                             {
                                 walker.Id = reader.GetInt32(reader.GetOrdinal("WalkerId"));
                                 walker.Name = reader.GetString(reader.GetOrdinal("WalkerName"));
                                 walker.ImageUrl = reader.GetString(reader.GetOrdinal("WalkerImage"));
                                 walker.NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId"));
                                 walker.Walks = new List<Walk>();
+                                walker.Neighborhood = new Neighborhood
+                                {
+                                    Name = reader.GetString(reader.GetOrdinal("NeighName"))
+                                };
 
                             };
 
                             if (!reader.IsDBNull(reader.GetOrdinal("WalkId")))
 
                             {
-
-
                                 //{
                                 Walk walk = new Walk
                                 {
@@ -129,7 +132,10 @@ namespace DogGo.Repositories
                                 };
 
                                 walker.Walks.Add(walk);
-                                
+
+                          
+
+
                             }
                         }
                         //added else statement
